@@ -1,0 +1,24 @@
+{
+  "name": "roomz",
+  "version": "1.0.0",
+  "description": "IOT Tutorial - How to build a Room-Dashboard for Temperature and Humidity with a Microsoft MXChip (Arduino), Kibana, Docker and some lines of NodeJS.",
+  "main": "app.js",
+  "dependencies": {
+    "elasticsearch": "^16.5.0",
+    "mqtt": "^3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FlorianWilk/Roomz.git"
+  },
+  "author": "Florian Wilk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FlorianWilk/Roomz/issues"
+  },
+  "homepage": "https://github.com/FlorianWilk/Roomz#readme"
+}
