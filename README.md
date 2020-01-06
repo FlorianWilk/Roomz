@@ -76,6 +76,41 @@ Now let's prepare...
 
 ## The Sensor
 
+First lets download the Arduino IDE for your OS:
+
+https://www.arduino.cc/en/main/software
+
+Install it, open it and the you will have to add some Libaries:
+
+Tools -> Manage Libraries
+
+< add which libs are needed. >
+
+Now hit CTRL-O and open the folder "ArduinoCode" of this Repository which you have cloned before (for example "~/Roomz/ArduinoCode"). 
+
+Now change the line 
+
+```
+const char* mqttServer = "hubert";
+```
+to match the Hostname or IP of the PC where you installed this Repository. In my case the Hostname is "hubert". But you can also use an IP-Address:
+```
+const char* mqttServer = "192.168.178.12";
+```
+Press CTRL-S to save.
+
+Connect your MXChip via USB to the PC, wait some seconds.
+Then press CTRL-U to upload the code to the MXChip.
+
+You should see no errors here. Again, if you do: PM me.
+
+## Tadaaa
+
+Now you should see the first Data coming in. Yay.
+
+
+
+
 
 
 
