@@ -2,7 +2,7 @@ var mqtt = require('mqtt')
 var elasticsearch = require('elasticsearch');
 
 
-var client  = mqtt.connect('mqtt://localhost')
+var client  = mqtt.connect('mqtt://mosquitto')
 client.on('connect', function () {
   client.subscribe('room-status', function (err) {
     if (!err) {
@@ -12,7 +12,7 @@ client.on('connect', function () {
 })
 
 
- 
+var eclient;
 var indexname="roomstatus"
 
 function subscribe() {
@@ -28,10 +28,13 @@ function subscribe() {
               type: '_doc',
               body: dat
           },function(err,resp,status) {
-              console.log("Error while indexing document to Elasticsearch");
+              if(err) 
+              console.err("Error while indexing document to Elasticsearch");
+              else
+              console.log("Entry was saved")
           });
       } catch(e){
-          console.log("Error while converting MQTT Message to Elasticsearch");
+          console.log("Error while converting MQTT Message to Elasticsearch"+e);
       }
       
       //  client.end()
@@ -39,8 +42,9 @@ function subscribe() {
 }
 
 function runme() {
-var eclient = new elasticsearch.Client({
-    host: 'localhost:9200',
+
+ eclient = new elasticsearch.Client({
+    host: 'elasticsearch:9200',
  //   log: 'trace',
     apiVersion: '7.2', // use the same version of your Elasticsearch instance
   });
@@ -62,7 +66,7 @@ eclient.ping({
                 subscribe()
             } else {
                 eclient.indices.create( {index: indexname}, (err, res, status) => {
-                    putMapping()
+                    putMapping(eclient)
                 console.log("***",err, res, status);
             })
           }
@@ -73,7 +77,7 @@ eclient.ping({
 
 runme()
 
-async function putMapping () {
+async function putMapping (eclient) {
     console.log("Creating Mapping index");
     eclient.indices.putMapping({
         index: indexname,
