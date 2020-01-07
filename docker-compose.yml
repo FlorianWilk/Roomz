@@ -20,6 +20,9 @@ services:
       - default   
   kibana:
     image: docker.elastic.co/kibana/kibana:6.3.2
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_HOSTS: elasticsearch
     expose:
       - 5601
     ports:
