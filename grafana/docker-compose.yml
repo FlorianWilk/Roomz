@@ -1,0 +1,81 @@
+---
+version: "3"
+services:
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+      - "8090:8090"
+    env_file:
+      - 'env.influxdb'
+    volumes:
+      # Data persistency
+      # sudo mkdir -p /srv/docker/influxdb/data
+      - ./data:/var/lib/influxdb
+ #   networks:
+ #     - default   
+    restart: always       
+#  telegraf:
+#    image: telegraf:latest
+#    container_name: telegraf
+#    links:
+#      - influxdb
+#    volumes:
+#      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    hostname: mosquitto    
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    expose:
+      - 1883
+      - "9001"
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+ #   networks:
+ #     - default         
+    restart: always
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    expose:
+      - 3000    
+    ports:
+      - "3000:3000"
+    env_file:
+      - 'env.grafana'
+    user: "0"
+    links:
+      - influxdb
+    volumes:
+      # Data persistency
+      # sudo mkdir -p /srv/docker/grafana/data; chown 472:472 /srv/docker/grafana/data
+      - ./gdata:/var/lib/grafana
+      - ./config/grafana.ini:/etc/grafana/grafana.ini
+      - ./config/dashboards:/var/lib/grafana/dashboards
+      - ./config/datasources:/etc/grafana/datasources
+      - ./config/plugins:/var/lib/grafana/plugins      
+#    networks:
+#      - default         
+    restart: always
+  adapter:
+    build: .
+    command: node app.js    
+    depends_on:
+      - influxdb
+      - mosquitto
+    links:
+      - influxdb      
+      - mosquitto
+#    networks:
+#      - default        
+    restart: always
+#networks:
+#  default:
+#    ipam:
+#      config:
+#        - subnet: 172.19.1.0/24
