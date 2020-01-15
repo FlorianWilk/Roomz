@@ -9,14 +9,14 @@
 #include "MQTTNetwork.h"
 
 /*************************************************
- *  THESE SETTINGS MUST BE CHANGED TO
- *  BE ABLE TO CONNECT TO YOUR WIFI
- *  AND THE PC WHERE THE ROOMZ-STACK IS RUNNING ON
+    THESE SETTINGS MUST BE CHANGED TO
+    BE ABLE TO CONNECT TO YOUR WIFI
+    AND THE PC WHERE THE ROOMZ-STACK IS RUNNING ON
  *********************************************/
 
 const char* mqttServer = "wolfram";
 char* SSID = "<MY WIFI SSID>";
-char* KEY="<MY WIFI KEY>";
+char* KEY = "<MY WIFI KEY>";
 
 char* room = "bedroom";
 
@@ -168,7 +168,7 @@ static void InitWifi()
     rgbLed.setColor(255, 0, 0);
   }
   initMQTT();
-    digitalWrite(WIFILED, LOW);
+  digitalWrite(WIFILED, LOW);
 }
 
 void setup()
@@ -252,6 +252,8 @@ void loop()
 
     // Check if we lost MQTT only
     if (!client.isConnected()) {
+      mqttNetwork.disconnect();
+      delay(1000);
       initMQTT();
     }
 
@@ -280,6 +282,11 @@ void loop()
     message.payloadlen = strlen(buf) ;
     message.payload = (void*)buf;
     int rc = client.publish(topic, message);
+    if (rc == -1) {
+      mqttNetwork.disconnect();
+      delay(1000);
+    }
+    initMQTT();
     last = millis();
   }
   client.yield(100);
